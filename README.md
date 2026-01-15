@@ -1,3 +1,5 @@
+[![release](https://github.com/pandanirio/gh-manage-env/actions/workflows/release.yml/badge.svg)](https://github.com/pandanirio/gh-manage-env/actions/workflows/release.yml)
+
 # gh-manage-env
 
 A CLI tool to synchronize `.env` files with GitHub Actions repository secrets, variables, and environment-specific secrets/variables.
