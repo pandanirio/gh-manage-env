@@ -12,7 +12,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
+      fail-fast: false
       matrix:
         goos: [linux, darwin]
         goarch: [amd64, arm64]
@@ -42,6 +44,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always() && (needs.build.result == 'success' || needs.build.result == 'partial')
     steps:
       - uses: actions/checkout@v4
         with:
