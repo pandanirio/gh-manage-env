@@ -31,11 +31,12 @@ jobs:
         run: |
           mkdir -p dist
           go build -ldflags="-s -w" -o dist/gh-manage-env_${GOOS}_${GOARCH} .
+          ls -lh dist/
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: gh-manage-env-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/gh-manage-env_${GOOS}_${GOARCH}
+          path: dist/gh-manage-env_${{ matrix.goos }}_${{ matrix.goarch }}
           retention-days: 1
 
   release:
