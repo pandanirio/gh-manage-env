@@ -48,13 +48,36 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: gh-manage-env-*
           path: artifacts
+      - name: Verify artifacts downloaded
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          if [ ! -d artifacts ]; then
+            echo "❌ Artifacts directory not found!"
+            exit 1
+          fi
+          echo "✅ Artifacts directory found"
+          echo "Artifacts structure:"
+          find artifacts -type f -o -type d | head -20 || ls -R artifacts || true
       - name: Collect binaries
         run: |
           mkdir -p dist
-          find artifacts -type f -name "gh-manage-env_*" -exec cp {} dist/ \;
-          ls -lh dist/
+          # Find all binaries in artifacts directory (they might be in subdirectories)
+          if [ -d artifacts ]; then
+            find artifacts -type f -name "gh-manage-env_*" -exec cp {} dist/ \;
+          else
+            echo "❌ Artifacts directory does not exist"
+            exit 1
+          fi
+          echo "📦 Collected binaries:"
+          ls -lh dist/ || echo "No files in dist/"
+          if [ ! "$(ls -A dist 2>/dev/null)" ]; then
+            echo "❌ No binaries found in dist/"
+            echo "Searching for files:"
+            find artifacts -type f || true
+            exit 1
+          fi
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
